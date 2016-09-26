@@ -1,0 +1,196 @@
+" use advanced Vim features
+set nocompatible
+" expand tabs to spaces
+" to insert a real tab, use CTRL-V<Tab>
+set expandtab
+" number of spaces to use for each step of (auto)indent
+set shiftwidth=2
+" number of spaces that a <Tab> in the file counts for
+set tabstop=2
+set softtabstop=2
+" Round indent to multiple of 'shiftwidth'. Applies to > and < commands
+set noshiftround
+" Copy indent from current line when starting a new line
+set autoindent
+" vertical cursor movement keeps cursor in the same column (if possible)
+set nostartofline
+" When there is a previous search pattern, highlight all its matches
+set hlsearch
+" While typing a search pattern, show where the so far typed pattern
+" matches
+set incsearch
+" Searches wrap around the end of the file
+set wrapscan
+" case of normal letters is ignored
+set ignorecase
+" Override 'ignorecase on' if search pattern contains uppercase characters
+set smartcase
+" Do not wrap lines longer than the width of the window
+set nowrap
+" screen won't be redrawn while executing macros, registers and other
+" commands
+set lazyredraw
+"  precede each line with its line number
+"set number
+" do not unload |abandon|ed buffers
+set hidden
+" The window that the mouse pointer is on is automatically activated
+"set mousefocus
+set winminheight=0
+" the mouse pointer is hidden when characters are typed
+set mousehide
+" RMB pops up a menu. Shift-LMB extends a selection.
+set mousemodel=popup
+" Use same directory as with last file browser
+set browsedir=last
+" display what mode I'm in
+set showmode
+" display status line for a single window too
+set laststatus=2
+" show the line and column number of the cursor position in the status line
+set ruler
+" show ^M in dos files
+set fileformats=unix,dos
+" visualize nonprinting chars w/o breaking layout
+set listchars=tab:>-,eol:$,trail:*,extends:>,precedes:<
+" do not reindent lines starting with "#"
+set cinkeys-=0#
+" indent  allow backspacing over autoindent
+" eol     allow backspacing over line breaks (join lines)
+" start   allow backspacing over the start of insert
+set backspace=indent,eol,start
+" listings pause when the whole screen is filled
+set more
+" number of screen lines to keep above and below the cursor
+set scrolloff=2
+set sidescroll=1
+set sidescrolloff=10
+" Display an incomplete command in the lower right corner of the Vim window
+set showcmd
+" Cursor can be positioned where there is no actual character
+" block   Allow virtual editing in Visual block mode.
+" insert  Allow virtual editing in Insert mode.
+" all     Allow virtual editing in all modes.
+set virtualedit=all
+" allow movement across newline in all modes, from right to left only
+set whichwrap=b,h,<,[
+" the following 3-fold combo makes vim react faster to <Esc> (leaving
+" Visual, Command modes, etc.) this could screw cursor keys in Insert mode
+" on veeeeeery slow machines / connections (not likely to ever happen)
+" the default value is 1000 ms, which is terribly slow
+set notimeout       " don't timeout on mappings       
+set ttimeout        " do timeout on terminal key codes
+set timeoutlen=50   " timemout in 50 msec            
+" I want man to open in new termwin
+" unfortunately doesn't work
+"set keywordprg=rxvt\ -e\ man
+" jump to the matching paren for .5sec, or beep if there isn't one
+set showmatch
+
+" Tells when the 'equalalways' option applies: 
+" ver     vertically, width of windows is not affected
+" hor     horizontally, height of windows is not affected
+" both    width and height of windows is affected
+set eadirection=hor
+" When on, splitting a window will put the new window below the current
+" one.
+set splitbelow
+" When on, splitting a window will put the new window right of the current
+" one.
+set splitright
+
+set shell=/bin/sh
+
+
+function! Ft()
+    return &filetype
+endfunction
+function! Ro()
+    if &readonly
+        return 'R'
+    else
+        return ' '
+    endif
+endfunction
+function! Mo()
+    if &modified
+        return 'M'
+    else
+        return ' '
+    endif
+endfunction
+function! Nm()
+    if &modifiable
+        return ' '
+    else
+        return 'N'
+    endif
+endfunction
+set statusline=%3n\ %<%f%=%4b/0x%02B\ %{Ft()}\ %{Mo()}%{Nm()}%{Ro()}\ %2c\ %2v\ %4l\ %4L\ %3p%%
+
+"" sane cmdline (shell/emacs-like) mappings
+cnoremap <C-G> <C-C>
+cnoremap <C-A> <Home>
+cnoremap <C-F> <Right>
+cnoremap <C-B> <Left>
+cnoremap <Esc>b <S-Left>
+cnoremap <Esc>f <S-Right>
+
+nnoremap gf :sp <cfile><CR>
+
+" after performing a search, matches are highlighted. get rid of the
+" highlighting with <Enter>
+" breaks e. g. quickfix window! (:.cc still works)
+nnoremap <silent> <Enter> :nohl<Enter>
+" simplify path completion in normal mode
+inoremap <C-F> <C-X><C-F>
+
+function! FlipDiff()
+  if &diff
+    setlocal nodiff noscrollbind foldmethod=marker foldcolumn=0
+  else
+    diffthis
+  endif
+endfunction
+
+"nmap <F6> :call FlipDiff()<CR>
+nmap <F6> :syntax sync fromstart<CR>
+nmap <F7> :diffget<CR>
+nmap <F8> :diffput<CR>
+nmap <F9> :diffupdate<CR>
+
+let f='$VIMRUNTIME/menu.vim'
+if filereadable(f)
+source f
+endif
+
+set wildmenu
+"set wildmode=longest,list
+set wildmode=longest:full
+set wcm=<C-Z>
+map <F10> :emenu <C-Z>
+
+let f='~/.vim/abbreviations'
+if filereadable(f)
+source f
+endif
+
+filetype indent plugin on
+
+colorscheme desert
+if has("gui_running")
+    set winaltkeys=menu
+    " set guifont=-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-iso8859-2
+endif
+if &t_Co > 2 || has("gui_running") 
+    syntax on
+    set background=dark
+    highlight Folded guifg=Wheat guibg=DarkRed
+    syntax sync fromstart
+endif
+
+" no friggin' toolbar
+set guioptions-=T
+
+
+" vim:tw=75
